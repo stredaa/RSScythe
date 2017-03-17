@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>{{ title }}</title>
+    <link href="{{ selfURL }}" rel="self"></link>
+    {% if (subtitle != "") %}
+    <subtitle>{{ subtitle }}</subtitle>
+    {% endif %}
+
+    <id>{{ ID | e }}</id>
+    <updated>{{ time }}</updated>
+    <generator uri="https://github.com/stredaa/RSScythe" version="1.0"> RSScythe </generator>
+    {%- for item in items %}
+        <entry>
+            <title>{{ item['title'] }}</title>
+            <link href="{{ item['link'] | e }}" rel="alternate"></link>
+            <updated>{{ item['updated'] }}</updated>
+            <id>{{ item['id'] | e}}</id>
+            <author><name>{{ item['author'] }}</name></author>
+            <summary type="html">{{ item['summary'] | e }}</summary>
+        </entry>
+    {% endfor %}
+</feed>

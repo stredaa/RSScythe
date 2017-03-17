@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <script>
+            var selected
+
+            function menuClick(element, location, src){
+                if (location === ""){
+                    document.getElementById("placeholder").srcdoc=src;
+                } else {
+                    document.getElementById("placeholder").src=location;
+                }
+
+                if (selected !== undefined) {
+                    selected.className = selected.className.replace( /(?:^|\s)highlight(?!\S)/g , '' );
+                };
+                element.className += " highlight";
+                selected = element;
+            }
+
+            function search(input) {
+                var input, filter, ul, li, a, i;
+                filter = input.value.toUpperCase();
+                ul = document.getElementById("menuBar");
+                li = ul.getElementsByTagName('li');
+
+                for (i = 0; i < li.length; i++) {
+                    div = li[i].getElementsByTagName("div")[0];
+                    if (div.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        li[i].style.display = "";
+                    } else {
+                        li[i].style.display = "none";
+                    }
+                }
+            }
+
+            function checkFocus(){
+                element = document.getElementById("searchBar");
+                element.focus();
+            }
+        </script>
+        <style>
+            body {
+                color:#FFD7AF;
+                background-color:#1C1C1C;
+                font-size:18px;
+                font-family: Monospace;
+            }
+
+            ul.menu {
+                list-style-type: none;
+                width: 24%;
+                margin: 0;
+                padding: 0;
+            }
+
+            li.menu div.menu {
+                display: block;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
+
+            li.menu div.menu:hover {
+                background-color: #52a56b;
+                color: #1C1C1C;
+            }
+
+            .highlight{
+                background-color: #a5526b;
+                color: #1C1C1C;
+            }
+
+            .search {
+                background-image: url('searchicon.png');
+                background-repeat: no-repeat;
+                background-position: 8px 3px;
+                border: None;
+                background-color: #FFD7AF;
+                color: #1C1C1C;
+                font-size: 18px;
+                font-family:Monospace;
+                padding: 8px 16px;
+                padding-left: 48px;
+                width: 100%;
+                box-sizing: border-box;
+                margin: 0;
+            }
+
+            iframe.content {
+                border: None;
+                position: fixed;
+                left: 25%;
+                top: 0px;
+                width: 75%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body onkeydown="checkFocus()">
+        <div style="width: 24%; padding:0; margin: 0; /*position: fixed;*/ ">
+            <input id="searchBar" type="text" class="search" onkeyup="search(this)" placeholder="Search..">
+        </div>
+        <ul id="menuBar" class="menu">
+            {%- for item in menulist %}
+            <li class="menu"><div class="menu" onclick='javascript: menuClick(this, "{{item["location"]  | e }}", "{{item["src"]  | e }}")'>
+                    {{item["name"]  | e }}
+            </div></li>
+            {%- endfor %}
+        </ul>
+        <iframe class="content" id="placeholder">
+            Your browser does not support iframes.
+        </iframe>
+    </body>
+</html>
