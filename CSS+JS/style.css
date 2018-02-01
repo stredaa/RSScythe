@@ -1,0 +1,29 @@
+a:link{
+	color: #cccccc
+}
+a:visited{
+	color: #FFD7AF
+}
+a:hover{
+	color: #1ed71a
+}
+body{
+	line-height:1.6;
+	font-size:18px;
+	color:#FFD7AF;
+	padding:0 10px;
+	font-family: Monospace;
+	background-color:#1C1C1C
+}
+
+body {
+    color:#FFD7AF;
+    background-color:#1C1C1C;
+    font-size:18px;
+    font-family: Monospace;
+}
+
+.highlight{
+    background-color: #a5526b;
+    color: #1C1C1C;
+}
