@@ -2,8 +2,9 @@
 <html>
     <head>
         <meta charset="utf-8"/>
+        <title>{{ title }}</title>
         <script>
-            var selected
+            var selected;
 
             function menuClick(element, location, src){
                 if (location === ""){
@@ -39,18 +40,27 @@
                 element = document.getElementById("searchBar");
                 element.focus();
             }
-        </script>
-        <style>
-            body {
-                color:#FFD7AF;
-                background-color:#1C1C1C;
-                font-size:18px;
-                font-family: Monospace;
-            }
+            {% if menu_horizontal_list %}
 
+            function doAction(action, doConfirm){
+                //Ajax request
+                var xgr = new XMLHttpRequest();
+                xgr.open("POST", "/action", true);
+                xgr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xgr.send("action=" + action)
+
+                //Get response
+                xgr.onreadystatechange = function() {
+                    eval(this.responseText)
+                }
+            }
+            {% endif %}
+        </script>
+        <link rel="stylesheet" href="CSS+JS/style.css" type="text/css">
+        <style>
             ul.menu {
                 list-style-type: none;
-                width: 24%;
+                width: 100%;
                 margin: 0;
                 padding: 0;
             }
@@ -59,18 +69,32 @@
                 display: block;
                 padding: 8px 16px;
                 text-decoration: none;
+                text-overflow: clip;
+                overflow: hidden;
             }
 
             li.menu div.menu:hover {
                 background-color: #52a56b;
                 color: #1C1C1C;
             }
-
-            .highlight{
-                background-color: #a5526b;
-                color: #1C1C1C;
+            {% if menu_horizontal_list %}
+            ul.menu_horizontal {
+                width: 100%;
             }
 
+            div.divform {
+                padding: 8px 16px;
+                position: fixed;
+                left: 375px;
+                top: 0px;
+                height: 50px;
+                width: calc(100% - 375px);
+            }
+
+            li.menu_horizontal div.menu_horizontal {
+                float: left;
+            }
+            {% endif %}
             .search {
                 background-image: url('searchicon.png');
                 background-repeat: no-repeat;
@@ -90,26 +114,46 @@
             iframe.content {
                 border: None;
                 position: fixed;
-                left: 25%;
+                color:#FFD7AF;
+                left: 375px;
+                {% if menu_horizontal_list %}
+                top: 50px;
+                {% else %}
                 top: 0px;
-                width: 75%;
+                {% endif %}
+                width: calc(100% - 375px);
                 height: 100%;
             }
         </style>
     </head>
     <body onkeydown="checkFocus()">
-        <div style="width: 24%; padding:0; margin: 0; /*position: fixed;*/ ">
+        <div style="width: 350px; padding:0; margin: 0;">
             <input id="searchBar" type="text" class="search" onkeyup="search(this)" placeholder="Search..">
+            <ul id="menuBar" class="menu">
+                {%- for item in menu_list %}
+                <li class="menu"><div class="menu" onclick='javascript: menuClick(this, "{{item["location"]  | e }}", "{{item["src"]  | e }}")'>
+                        {{item["name"]  | e }}
+                </div></li>
+                {%- endfor %}
+            </ul>
         </div>
-        <ul id="menuBar" class="menu">
-            {%- for item in menulist %}
-            <li class="menu"><div class="menu" onclick='javascript: menuClick(this, "{{item["location"]  | e }}", "{{item["src"]  | e }}")'>
-                    {{item["name"]  | e }}
-            </div></li>
-            {%- endfor %}
-        </ul>
-        <iframe class="content" id="placeholder">
+        {% if menu_horizontal_list%}
+        <div class="divform">
+            <ul class="menu_horizontal menu">
+                {%- for item in menu_horizontal_list %}
+                <li class="menu_horizontal menu">
+                    <div class='menu_horizontal menu' onClick='javascript: doAction("{{ item["action"] | e}}", {{ item["doConfirm"] }});'>
+                        {{item["text"] | e}}
+                    </div>
+                </li>
+                {%- endfor %}
+            </ul>
+        </div>
+
+        {% endif %}
+        <iframe class="content" id="placeholder" src="{{ selected }}">
             Your browser does not support iframes.
         </iframe>
     </body>
 </html>
+
